@@ -33,7 +33,7 @@ test('can adjust stock in', function () {
         'notes' => 'Restock from supplier',
     ];
 
-    $response = $this->post(route('inventory.adjust'), $adjustData);
+    $response = $this->post(route('inventory.adjust.store'), $adjustData);
 
     $response->assertRedirect();
     expect($product->fresh()->stock)->toBe(60);
@@ -58,7 +58,7 @@ test('can adjust stock out', function () {
         'notes' => 'Damaged goods',
     ];
 
-    $response = $this->post(route('inventory.adjust'), $adjustData);
+    $response = $this->post(route('inventory.adjust.store'), $adjustData);
 
     $response->assertRedirect();
     expect($product->fresh()->stock)->toBe(40);
@@ -83,7 +83,7 @@ test('can adjust stock to specific value', function () {
         'notes' => 'Physical count correction',
     ];
 
-    $response = $this->post(route('inventory.adjust'), $adjustData);
+    $response = $this->post(route('inventory.adjust.store'), $adjustData);
 
     $response->assertRedirect();
     expect($product->fresh()->stock)->toBe(100);
@@ -107,7 +107,7 @@ test('cannot adjust stock below zero', function () {
         'type' => 'out',
     ];
 
-    $response = $this->post(route('inventory.adjust'), $adjustData);
+    $response = $this->post(route('inventory.adjust.store'), $adjustData);
 
     $response->assertSessionHasErrors();
     expect($product->fresh()->stock)->toBe(10); // Stock unchanged

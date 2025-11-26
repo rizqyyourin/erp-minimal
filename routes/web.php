@@ -47,7 +47,7 @@ Route::middleware('auth')->prefix('app')->group(function () {
 		$products = \App\Models\Product::orderBy('name')->get();
 		return view('inventory.adjust', compact('products'));
 	})->name('inventory.adjust');
-	Route::post('inventory/adjust', [InventoryController::class, 'adjust'])->name('inventory.adjust');
+	Route::post('inventory/adjust', [InventoryController::class, 'adjust'])->name('inventory.adjust.store');
 	
 	// Profile
 	Route::get('profile', [ProfileController::class, 'index'])->name('profile');

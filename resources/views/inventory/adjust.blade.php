@@ -15,7 +15,7 @@
     <x-page-heading title="Manual Stock Adjustment" description="Adjust product stock directly" />
 
     <div class="rounded-3xl border border-slate-100 bg-white p-8 shadow-[0_20px_60px_-35px_rgba(15,23,42,0.5)] max-w-xl mx-auto">
-        <form method="POST" action="{{ route('inventory.adjust') }}">
+        <form method="POST" action="{{ route('inventory.adjust.store') }}">
             @csrf
             <div class="mb-6">
                 <label for="product_id" class="mb-2 block text-sm font-semibold text-slate-700">Product</label>
