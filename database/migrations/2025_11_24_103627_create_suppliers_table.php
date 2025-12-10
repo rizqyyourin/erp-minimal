@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('phone')->nullable();
+            $table->text('address')->nullable();
             $table->integer('lead_time_days')->nullable();
             $table->timestamps();
             $table->softDeletes();
