@@ -27,7 +27,6 @@ class InventoryService
 
             // Log transaction
             $transaction = InventoryTransaction::create([
-                'tenant_id' => $data['tenant_id'],
                 'product_id' => $product->id,
                 'qty' => $data['type'] === 'out' ? -abs($data['qty']) : abs($data['qty']),
                 'type' => $data['type'],

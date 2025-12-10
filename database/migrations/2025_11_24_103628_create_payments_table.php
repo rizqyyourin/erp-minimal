@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->foreignId('invoice_id')->constrained()->cascadeOnDelete();
             $table->decimal('amount', 15, 2);
             $table->enum('method', ['cash', 'transfer', 'card', 'giro']);
@@ -21,7 +20,7 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
             
-            $table->index(['tenant_id', 'invoice_id']);
+            $table->index('invoice_id');
         });
     }
 

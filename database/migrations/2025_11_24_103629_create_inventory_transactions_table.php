@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('inventory_transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->integer('qty');
             $table->enum('type', ['in', 'out', 'adjust']);
@@ -22,7 +21,7 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
             
-            $table->index(['tenant_id', 'product_id']);
+            $table->index('product_id');
             $table->index(['reference_type', 'reference_id']);
         });
     }

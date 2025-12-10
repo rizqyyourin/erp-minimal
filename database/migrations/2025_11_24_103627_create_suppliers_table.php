@@ -13,15 +13,12 @@ return new class extends Migration
     {
         Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('email');
             $table->string('phone')->nullable();
             $table->integer('lead_time_days')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            
-            $table->index('tenant_id');
         });
     }
 

@@ -9,7 +9,6 @@ class InventoryTransaction extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'tenant_id',
         'product_id',
         'qty',
         'type',

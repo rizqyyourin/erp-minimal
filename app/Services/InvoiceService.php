@@ -26,7 +26,6 @@ class InvoiceService
 
             // Create invoice
             $invoice = Invoice::create([
-                'tenant_id' => 1,
                 'customer_id' => $data['customer_id'],
                 'title' => $data['title'] ?? null,
                 'reference' => $data['reference'] ?? null,
@@ -62,7 +61,6 @@ class InvoiceService
 
                 // Log inventory transaction
                 InventoryTransaction::create([
-                    'tenant_id' => 1,
                     'product_id' => $product->id,
                     'qty' => -$itemData['qty'],
                     'type' => 'out',
@@ -86,7 +84,6 @@ class InvoiceService
 
                 // Log inventory transaction
                 InventoryTransaction::create([
-                    'tenant_id' => 1,
                     'product_id' => $product->id,
                     'qty' => $item->qty,
                     'type' => 'in',

@@ -44,7 +44,6 @@ class InventoryController extends Controller
         ]);
 
         try {
-            $validated['tenant_id'] = 1;
             $this->inventoryService->adjustStock($validated);
 
             return back()->with('success', 'Stock adjusted successfully.');

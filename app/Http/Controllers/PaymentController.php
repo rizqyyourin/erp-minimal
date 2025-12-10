@@ -25,7 +25,6 @@ class PaymentController extends Controller
         ]);
 
         $validated['paid_at'] = $validated['paid_at'] ?? now();
-        $validated['tenant_id'] = 1;
 
         try {
             $this->invoiceService->recordPayment($invoice, $validated);
