@@ -13,60 +13,426 @@
 </p>
 
 <p align="center">
+  <a href="#-architecture">Architecture</a> •
   <a href="#-features">Features</a> •
-  <a href="#-screenshots">Screenshots</a> •
+  <a href="#-database-schema">Database</a> •
   <a href="#-installation">Installation</a> •
-  <a href="#-usage">Usage</a> •
-  <a href="#-tech-stack">Tech Stack</a>
+  <a href="#-project-structure">Structure</a>
 </p>
 
 ---
 
-## 🎯 Features
+## 🏗️ Architecture
 
-### 📊 Dashboard
-- **Real-time metrics** — MRR, outstanding invoices, low stock alerts, daily payments
-- **Quick actions** — Create invoice directly from dashboard
-- **Pipeline view** — Recent invoices with status badges
+### **System Overview**
 
-### 📦 Products Management
-- Full CRUD with search & pagination
-- SKU, sell price, cost price, stock tracking
-- Category organization
-- Stock status indicators (active, low stock, critical)
-
-### 👥 Customers & Suppliers
-- Customer database with contact info
-- Supplier management with addresses
-- Linked to invoices for easy tracking
-
-### 🧾 Invoices & Payments
-- Dynamic invoice builder with Livewire
-- Auto-calculate subtotal, tax (11%), and total
-- Partial payment support
-- Payment methods: Cash, Transfer, Card, Giro
-- Cancel invoice with automatic stock revert
-
-### 📈 Inventory Tracking
-- Stock in/out logging
-- Manual stock adjustments
-- Full transaction history with references
-
-### 👤 User Profile
-- Update profile information
-- Secure account deletion with confirmation
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         CLIENT LAYER                             │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │  Blade Templates + Alpine.js + Tailwind CSS             │   │
+│  │  - Login/Register Forms                                  │   │
+│  │  - Dashboard with Real-time Metrics                      │   │
+│  │  - CRUD Interfaces (Products, Customers, Suppliers)      │   │
+│  │  - Invoice Builder (Livewire)                            │   │
+│  │  - Payment Management                                    │   │
+│  └──────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+                              ↕ HTTP/HTTPS
+┌─────────────────────────────────────────────────────────────────┐
+│                      APPLICATION LAYER                           │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │  Laravel 12 Framework                                    │   │
+│  │                                                          │   │
+│  │  ┌────────────────────────────────────────────────────┐  │   │
+│  │  │ Controllers (Route Handlers)                      │  │   │
+│  │  │ - ProductController, CustomerController          │  │   │
+│  │  │ - SupplierController, InvoiceController          │  │   │
+│  │  │ - PaymentController, InventoryController         │  │   │
+│  │  │ - ProfileController, AuthController             │  │   │
+│  │  └────────────────────────────────────────────────────┘  │   │
+│  │                          ↕                               │   │
+│  │  ┌────────────────────────────────────────────────────┐  │   │
+│  │  │ Services (Business Logic)                         │  │   │
+│  │  │ - InvoiceService (create, cancel, payments)      │  │   │
+│  │  │ - InventoryService (stock management)            │  │   │
+│  │  └────────────────────────────────────────────────────┘  │   │
+│  │                          ↕                               │   │
+│  │  ┌────────────────────────────────────────────────────┐  │   │
+│  │  │ Models (Eloquent ORM)                             │  │   │
+│  │  │ - Product, Customer, Supplier, Invoice            │  │   │
+│  │  │ - Payment, InventoryTransaction, User             │  │   │
+│  │  └────────────────────────────────────────────────────┘  │   │
+│  └──────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+                              ↕ SQL
+┌─────────────────────────────────────────────────────────────────┐
+│                       DATA LAYER                                 │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │  SQLite / MySQL / PostgreSQL                            │   │
+│  │  - Products, Customers, Suppliers                       │   │
+│  │  - Invoices, Invoice Items, Payments                    │   │
+│  │  - Inventory Transactions, Users                        │   │
+│  └──────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 📸 Screenshots
+## 🗄️ Database Schema
 
-| Dashboard | Invoice Builder |
-|:---------:|:---------------:|
-| ![Dashboard](https://via.placeholder.com/400x250/f1f5f9/64748b?text=Dashboard) | ![Invoice](https://via.placeholder.com/400x250/f1f5f9/64748b?text=Invoice+Builder) |
+### **Entity Relationship Diagram**
 
-| Products | Inventory |
-|:--------:|:---------:|
-| ![Products](https://via.placeholder.com/400x250/f1f5f9/64748b?text=Products) | ![Inventory](https://via.placeholder.com/400x250/f1f5f9/64748b?text=Inventory) |
+```
+┌──────────────┐         ┌───────────────┐
+│   USERS      │         │   CUSTOMERS   │
+├──────────────┤         ├───────────────┤
+│ id (PK)      │         │ id (PK)       │
+│ name         │         │ name          │
+│ email        │         │ email         │
+│ password     │         │ phone         │
+│ created_at   │         │ address       │
+│ updated_at   │         │ created_at    │
+└──────────────┘         └───────────────┘
+                                ↑
+                                │ (hasMany)
+                                │
+                         ┌──────────────────┐
+                         │    INVOICES      │
+                         ├──────────────────┤
+                         │ id (PK)          │
+                         │ customer_id (FK) │
+                         │ invoice_number   │
+                         │ title            │
+                         │ subtotal         │
+                         │ discount         │
+                         │ tax              │
+                         │ total            │
+                         │ status           │
+                         │ due_date         │
+                         │ created_at       │
+                         └──────────────────┘
+                          ↑              ↓
+                    (hasMany)      (hasMany)
+                          │              │
+        ┌─────────────────┘              └─────────────────┐
+        │                                                  │
+   ┌────────────────┐                           ┌──────────────────┐
+   │ INVOICE_ITEMS  │                           │    PAYMENTS      │
+   ├────────────────┤                           ├──────────────────┤
+   │ id (PK)        │                           │ id (PK)          │
+   │ invoice_id(FK) │                           │ invoice_id (FK)  │
+   │ product_id(FK) │                           │ amount           │
+   │ qty            │                           │ method           │
+   │ price          │                           │ paid_at          │
+   │ subtotal       │                           │ notes            │
+   └────────────────┘                           │ created_at       │
+        ↓                                        └──────────────────┘
+   ┌──────────────┐
+   │  PRODUCTS    │
+   ├──────────────┤
+   │ id (PK)      │
+   │ name         │
+   │ sku          │
+   │ price        │
+   │ cost         │
+   │ stock        │
+   │ category     │
+   │ description  │
+   │ created_at   │
+   └──────────────┘
+        ↓
+        │ (hasMany)
+        │
+   ┌──────────────────────────┐
+   │ INVENTORY_TRANSACTIONS   │
+   ├──────────────────────────┤
+   │ id (PK)                  │
+   │ product_id (FK)          │
+   │ qty                      │
+   │ type (in/out/adjust)     │
+   │ reference_type           │
+   │ reference_id             │
+   │ notes                    │
+   │ created_at               │
+   └──────────────────────────┘
+
+┌─────────────────┐
+│    SUPPLIERS    │
+├─────────────────┤
+│ id (PK)         │
+│ name            │
+│ email           │
+│ phone           │
+│ address         │
+│ lead_time_days  │
+│ created_at      │
+└─────────────────┘
+```
+
+### **Table Details**
+
+| Table | Purpose | Key Fields |
+|-------|---------|-----------|
+| `users` | Authentication & user accounts | id, name, email, password |
+| `products` | Inventory master data | id, name, sku, price, cost, stock |
+| `customers` | Customer information | id, name, email, phone, address |
+| `suppliers` | Supplier information | id, name, email, phone, address |
+| `invoices` | Sales invoices | id, customer_id, invoice_number, status, total |
+| `invoice_items` | Invoice line items | id, invoice_id, product_id, qty, price |
+| `payments` | Payment records | id, invoice_id, amount, method, paid_at |
+| `inventory_transactions` | Stock movement log | id, product_id, qty, type, reference_type |
+
+---
+
+## 💻 Backend Architecture
+
+### **Controllers** (Route Handlers)
+
+```
+app/Http/Controllers/
+├── AuthController
+│   ├── showRegister()     → resources/views/auth/register.blade.php
+│   ├── register()         → Create user account
+│   ├── showLogin()        → resources/views/auth/login.blade.php
+│   ├── login()            → Authenticate user
+│   └── logout()           → Destroy session
+│
+├── DashboardController
+│   └── index()            → Dashboard with stats & metrics
+│
+├── ProductController (RESTful)
+│   ├── index()            → List products with pagination
+│   ├── create()           → Show create form
+│   ├── store()            → Save new product
+│   ├── show()             → View product details
+│   ├── edit()             → Show edit form
+│   ├── update()           → Update product
+│   └── destroy()          → Delete product (soft delete)
+│
+├── CustomerController (RESTful)
+│   ├── index()            → List customers
+│   ├── create()           → Show create form
+│   ├── store()            → Save new customer
+│   ├── show()             → View customer details
+│   ├── edit()             → Show edit form
+│   ├── update()           → Update customer
+│   └── destroy()          → Delete customer
+│
+├── SupplierController (RESTful)
+│   ├── index()            → List suppliers
+│   ├── create()           → Show create form
+│   ├── store()            → Save new supplier
+│   ├── show()             → View supplier details
+│   ├── edit()             → Show edit form
+│   ├── update()           → Update supplier
+│   └── destroy()          → Delete supplier
+│
+├── InvoiceController (RESTful + Custom)
+│   ├── index()            → List invoices
+│   ├── create()           → Show invoice builder
+│   ├── store()            → Create invoice + adjust stock
+│   ├── show()             → View invoice details
+│   ├── cancel()           → Cancel invoice + revert stock
+│
+├── PaymentController
+│   └── store()            → Record payment → Update invoice status
+│
+├── InventoryController
+│   ├── index()            → List inventory transactions
+│   └── adjust()           → Manual stock adjustment
+│
+└── ProfileController
+    ├── index()            → Show profile form
+    ├── update()           → Update profile
+    ├── deleteForm()       → Show delete confirmation
+    └── destroy()          → Delete user account
+```
+
+### **Services** (Business Logic)
+
+```
+app/Services/
+├── InvoiceService
+│   ├── createInvoice()     → Create invoice + deduct stock
+│   ├── cancelInvoice()     → Cancel invoice + restore stock
+│   └── recordPayment()     → Record payment + update status
+│
+└── InventoryService
+    └── adjustStock()       → Adjust stock + log transaction
+```
+
+### **Models** (Eloquent ORM)
+
+```
+app/Models/
+├── User               → belongsToMany(Invoice) [via payments]
+├── Product            → hasMany(InvoiceItem)
+│                     → hasMany(InventoryTransaction)
+│
+├── Customer           → hasMany(Invoice)
+│
+├── Supplier           → (standalone)
+│
+├── Invoice            → belongsTo(Customer)
+│                     → hasMany(InvoiceItem)
+│                     → hasMany(Payment)
+│
+├── InvoiceItem        → belongsTo(Invoice)
+│                     → belongsTo(Product)
+│
+├── Payment            → belongsTo(Invoice)
+│
+└── InventoryTransaction → belongsTo(Product)
+```
+
+---
+
+## 🎨 Frontend Architecture
+
+### **Template Structure**
+
+```
+resources/views/
+├── layouts/
+│   └── app.blade.php          (Main layout with sidebar, header)
+│
+├── auth/
+│   ├── login.blade.php        (Login form)
+│   └── register.blade.php     (Register form)
+│
+├── dashboard.blade.php        (Dashboard with metrics)
+│
+├── products/
+│   ├── index.blade.php        (Products list with search/filter)
+│   ├── create.blade.php       (Create product form)
+│   ├── edit.blade.php         (Edit product form)
+│   └── show.blade.php         (Product details)
+│
+├── customers/
+│   ├── index.blade.php        (Customers list)
+│   ├── create.blade.php       (Create customer form)
+│   ├── edit.blade.php         (Edit customer form)
+│   └── show.blade.php         (Customer details)
+│
+├── suppliers/
+│   ├── index.blade.php        (Suppliers list)
+│   ├── create.blade.php       (Create supplier form)
+│   ├── edit.blade.php         (Edit supplier form)
+│
+├── invoices/
+│   ├── index.blade.php        (Invoices list with status badges)
+│   ├── create.blade.php       (Invoice builder - Livewire)
+│   └── show.blade.php         (Invoice details + payment form)
+│
+├── inventory/
+│   ├── index.blade.php        (Inventory transactions log)
+│   └── adjust.blade.php       (Manual stock adjustment form)
+│
+├── profile/
+│   ├── index.blade.php        (Profile edit form)
+│   └── delete.blade.php       (Delete account with confirmation)
+│
+└── components/
+    ├── page-heading.blade.php (Page title + actions)
+    ├── sidebar-link.blade.php (Sidebar menu link)
+    └── stat-card.blade.php    (Dashboard metric card)
+```
+
+### **Frontend Technologies**
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **Templating** | Blade | PHP template engine |
+| **Styling** | Tailwind CSS 4.0 | Utility-first CSS framework |
+| **Interactivity** | Alpine.js | Lightweight JavaScript |
+| **Forms** | Livewire 3 | Dynamic server-side components |
+| **Build Tool** | Vite | Fast bundler for assets |
+
+### **Key Frontend Features**
+
+- **Responsive Design** — Mobile-first with Tailwind CSS
+- **Delete Confirmations** — Modal dialogs using Alpine.js
+- **Dynamic Invoices** — Livewire component for real-time calculations
+- **Search & Filter** — JavaScript-free server-side filtering
+- **Form Validation** — Client & server-side validation
+- **Status Badges** — Color-coded status indicators
+- **Pagination** — Efficient data browsing
+
+---
+
+## 🔄 Data Flow Examples
+
+### **Example 1: Create Product**
+
+```
+User fills form → POST /app/products
+  ↓
+ProductController::store()
+  ↓
+Validate: name, sku, price, cost, stock
+  ↓
+Product::create($validated)
+  ↓
+Database: INSERT into products
+  ↓
+Redirect to /app/products with success message
+```
+
+### **Example 2: Create Invoice & Adjust Stock**
+
+```
+User selects products → POST /app/invoices
+  ↓
+InvoiceController::store()
+  ↓
+InvoiceService::createInvoice()
+  ↓
+1. Calculate: subtotal, tax (11%), total
+2. INSERT into invoices
+3. INSERT into invoice_items
+4. For each item:
+   - product.stock -= qty
+   - INSERT into inventory_transactions (stock_out)
+  ↓
+Return invoice details page
+```
+
+### **Example 3: Record Payment**
+
+```
+User enters payment amount → POST /app/invoices/{id}/payments
+  ↓
+PaymentController::store()
+  ↓
+InvoiceService::recordPayment()
+  ↓
+1. INSERT into payments
+2. Calculate totalPaid = sum(payments)
+3. If totalPaid >= total:
+   - Update invoice.status = 'paid'
+   Else:
+   - Update invoice.status = 'partial'
+  ↓
+Redirect with success message
+```
+
+### **Example 4: Cancel Invoice & Revert Stock**
+
+```
+User clicks Cancel → POST /app/invoices/{id}/cancel
+  ↓
+InvoiceController::cancel()
+  ↓
+InvoiceService::cancelInvoice()
+  ↓
+For each invoice_item:
+  - product.stock += qty
+  - INSERT into inventory_transactions (stock_in)
+- Update invoice.status = 'cancelled'
+  ↓
+Redirect to invoice details
+```
 
 ---
 
@@ -81,9 +447,9 @@
 ### Quick Start
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/minimal-erp.git
-cd minimal-erp
+# Clone repository
+git clone https://github.com/rizqyyourin/erp-minimal.git
+cd erp-minimal
 
 # Install dependencies
 composer install
@@ -93,8 +459,8 @@ npm install
 cp .env.example .env
 php artisan key:generate
 
-# Run migrations
-php artisan migrate
+# Setup database (development)
+php artisan migrate:fresh
 
 # Build assets
 npm run build
@@ -103,123 +469,116 @@ npm run build
 php artisan serve
 ```
 
-### One-Command Setup
+### Production Deployment
 
 ```bash
-composer setup
+# 1. Clone & install
+git clone https://github.com/rizqyyourin/erp-minimal.git
+cd erp-minimal
+composer install --no-dev --optimize-autoloader
+npm install
+npm run build
+
+# 2. Configure environment
+cp .env.example .env
+# Edit .env with:
+# - APP_ENV=production
+# - APP_URL=https://yourdomain.com
+# - DB_CONNECTION, DB_DATABASE, etc.
+
+# 3. Setup database
+php artisan key:generate
+php artisan migrate --force
+
+# 4. Optimize
+php artisan optimize
+
+# 5. Configure web server (Nginx/Apache)
+# Point document root to: /var/www/erp-minimal/public
 ```
-
-This will install all dependencies, generate app key, run migrations, and build assets.
-
-### Development Mode
-
-```bash
-composer dev
-```
-
-Runs Laravel server, queue worker, and Vite in parallel.
-
----
-
-## 💡 Usage
-
-### Default Flow
-
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│  Products   │────▶│   Invoice   │────▶│   Payment   │
-│  (Stock)    │     │  (Pending)  │     │   (Paid)    │
-└─────────────┘     └─────────────┘     └─────────────┘
-       │                   │                   │
-       ▼                   ▼                   ▼
-   Stock -qty         Creates log        Updates status
-```
-
-### Invoice Lifecycle
-
-| Status | Description |
-|--------|-------------|
-| `pending` | Invoice created, awaiting payment |
-| `partial` | Partially paid |
-| `paid` | Fully paid |
-| `cancelled` | Cancelled, stock reverted |
-
-### Stock Adjustment Types
-
-| Type | Effect |
-|------|--------|
-| `stock_in` | Increase stock (purchase, return) |
-| `stock_out` | Decrease stock (sales) |
-| `adjustment` | Manual correction |
-
----
-
-## 🛠 Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| **Framework** | Laravel 12 |
-| **Frontend** | Blade Templates |
-| **Styling** | Tailwind CSS 4.0 |
-| **Interactivity** | Alpine.js, Livewire 3 |
-| **Database** | SQLite (default), MySQL, PostgreSQL |
-| **Testing** | Pest PHP |
-| **Build Tool** | Vite |
 
 ---
 
 ## 📁 Project Structure
 
 ```
+erp-minimal/
 ├── app/
-│   ├── Http/Controllers/     # Route controllers
-│   ├── Livewire/             # Livewire components
-│   ├── Models/               # Eloquent models
-│   └── Services/             # Business logic
+│   ├── Http/
+│   │   └── Controllers/         (10 controllers)
+│   ├── Models/                  (8 models)
+│   ├── Services/                (2 services)
+│   └── Providers/               (AppServiceProvider)
+│
+├── routes/
+│   └── web.php                  (Web routes)
+│
 ├── database/
-│   ├── factories/            # Model factories
-│   ├── migrations/           # Database migrations
-│   └── seeders/              # Database seeders
-├── resources/views/
-│   ├── components/           # Blade components
-│   ├── layouts/              # App layouts
-│   ├── products/             # Product views
-│   ├── invoices/             # Invoice views
-│   └── ...                   # Other modules
-└── routes/
-    └── web.php               # Web routes
+│   ├── migrations/              (10 migrations)
+│   ├── factories/               (7 factories)
+│   └── seeders/                 (DatabaseSeeder)
+│
+├── resources/
+│   ├── views/                   (40+ Blade templates)
+│   │   ├── layouts/
+│   │   ├── auth/
+│   │   ├── products/
+│   │   ├── customers/
+│   │   ├── suppliers/
+│   │   ├── invoices/
+│   │   ├── inventory/
+│   │   ├── profile/
+│   │   └── components/
+│   ├── css/                     (Tailwind CSS)
+│   └── js/                      (Alpine.js scripts)
+│
+├── public/
+│   ├── index.php                (Entry point)
+│   └── build/                   (Compiled assets)
+│
+├── tests/
+│   ├── Feature/                 (5 feature tests)
+│   └── Unit/                    (Unit tests)
+│
+├── config/
+│   ├── app.php
+│   ├── database.php
+│   ├── cache.php
+│   └── ...                      (Laravel configs)
+│
+├── composer.json                (PHP dependencies)
+├── package.json                 (Node dependencies)
+├── vite.config.js               (Vite config)
+└── README.md                    (This file)
 ```
 
 ---
 
-## 🧪 Testing
+## 🛠️ Tech Stack
 
-```bash
-# Run all tests
-php artisan test
-
-# Run with coverage
-php artisan test --coverage
-```
+| Category | Technology | Version |
+|----------|-----------|---------|
+| **Framework** | Laravel | 12.x |
+| **Language** | PHP | 8.2+ |
+| **Database** | SQLite/MySQL/PostgreSQL | Any |
+| **Frontend** | Blade + Tailwind CSS | 4.0 |
+| **Interactivity** | Alpine.js | Latest |
+| **Full-stack** | Livewire | 3.x |
+| **Build Tool** | Vite | 7.x |
+| **Testing** | Pest PHP | 4.x |
+| **Package Manager** | Composer + NPM | Latest |
 
 ---
 
 ## 📝 License
 
-This project is open-sourced software licensed under the [MIT license](LICENSE).
+MIT License - Open source and free for commercial use.
 
 ---
 
 ## 🙏 Credits
 
 Built with ❤️ by [Yourin](https://yourin.my.id)
-
-**Tech Stack:**
-- [Laravel](https://laravel.com) — PHP Framework
-- [Tailwind CSS](https://tailwindcss.com) — Utility-first CSS
-- [Livewire](https://livewire.laravel.com) — Full-stack framework
-- [Alpine.js](https://alpinejs.dev) — Lightweight JS framework
-- [Flowbite](https://flowbite.com) — UI Components
 
 ---
 
