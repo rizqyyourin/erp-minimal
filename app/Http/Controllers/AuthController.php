@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,15 +24,8 @@ class AuthController extends Controller
             'password' => ['required', 'confirmed', Password::min(8)],
         ]);
 
-        // Create tenant
-        $tenant = Tenant::create([
-            'name' => $validated['company_name'] ?? $validated['name'] . "'s Company",
-            'domain' => strtolower(str_replace(' ', '-', $validated['company_name'])),
-        ]);
-
         // Create user
         $user = User::create([
-            'tenant_id' => $tenant->id,
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
