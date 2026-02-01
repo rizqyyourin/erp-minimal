@@ -69,7 +69,7 @@
 
                     <div class="flex items-center gap-4">
                         <button type="button" 
-                            @click="showModal = true"
+                            x-on:click="showModal = true"
                             class="rounded-xl bg-red-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-red-700">
                             Delete My Account
                         </button>
@@ -96,7 +96,7 @@
                         x-transition:leave="transition ease-in duration-150"
                         x-transition:leave-start="opacity-100 scale-100"
                         x-transition:leave-end="opacity-0 scale-95"
-                        @click.away="showModal = false"
+                        x-on:click.away="showModal = false"
                         class="mx-4 w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
                         
                         <!-- Modal Header -->
@@ -115,12 +115,12 @@
                         <!-- Modal Actions -->
                         <div class="flex gap-3">
                             <button type="button" 
-                                @click="showModal = false"
+                                x-on:click="showModal = false"
                                 class="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                                 No, Keep My Account
                             </button>
                             <button type="button" 
-                                @click="document.getElementById('deleteAccountForm').submit()"
+                                x-on:click="document.getElementById('deleteAccountForm').submit()"
                                 class="flex-1 rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white hover:bg-red-700">
                                 Yes, Delete Forever
                             </button>

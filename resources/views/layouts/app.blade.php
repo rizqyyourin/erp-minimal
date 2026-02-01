@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'SaaS ERP')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,9 +17,7 @@
     <div class="flex min-h-screen bg-slate-50">
         <aside class="hidden w-72 shrink-0 border-r border-slate-100 bg-white lg:block">
             <a href="{{ route('landing') }}" class="flex items-center gap-2 px-8 py-6 hover:bg-slate-50 transition-colors">
-                <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-900 text-white font-semibold">
-                    ER
-                </div>
+                <img src="https://img.freepik.com/vektor-premium/logo-erp-huruf-erp-desain-logo-huruf-erp-inisial-logo-erp-terhubung-dengan-lingkaran-dan-logo-monogram-huruf-besar-tipografi-erp-untuk-bisnis-teknologi-dan-merek-real-estat_229120-74568.jpg" alt="Logo" class="h-10 w-10 rounded-xl object-cover">
                 <div>
                     <p class="text-sm font-semibold text-slate-900">ERP Minimal</p>
                     <p class="text-xs text-slate-500">Multi-tenant SaaS</p>
@@ -65,6 +62,20 @@
                             </svg>
                         </x-slot>
                     </x-sidebar-link>
+                    <x-sidebar-link href="{{ route('reports.index') }}" label="Reports" :active="request()->routeIs('reports.*')">
+                        <x-slot name="icon">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </x-slot>
+                    </x-sidebar-link>
+                    <x-sidebar-link href="{{ route('users.index') }}" label="Users" :active="request()->routeIs('users.*')">
+                        <x-slot name="icon">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </x-slot>
+                    </x-sidebar-link>
                     <x-sidebar-link href="{{ route('suppliers.index') }}" label="Suppliers" :active="request()->routeIs('suppliers.*')">
                         <x-slot name="icon">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -92,7 +103,7 @@
                     <div class="flex items-center justify-end gap-3">
                         @auth
                         <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" class="flex items-center gap-3 rounded-2xl border border-slate-200 px-3 py-2 hover:border-slate-300">
+                            <button x-on:click="open = !open" class="flex items-center gap-3 rounded-2xl border border-slate-200 px-3 py-2 hover:border-slate-300">
                                 <div class="text-right">
                                     <p class="text-sm font-semibold">{{ auth()->user()?->name ?? 'User' }}</p>
                                     <p class="text-xs text-slate-500">{{ auth()->user()?->email ?? '' }}</p>
@@ -101,7 +112,7 @@
                                     {{ strtoupper(substr(auth()->user()?->name ?? 'U', 0, 2)) }}
                                 </div>
                             </button>
-                            <div x-show="open" @click.away="open = false" 
+                            <div x-show="open" x-on:click.away="open = false" 
                                 class="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-100 bg-white shadow-lg"
                                 style="display: none;">
                                 <div class="p-2 space-y-1">
@@ -144,7 +155,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <span>{{ session('success') }}</span>
-                            <button @click="show = false" class="ml-auto">
+                            <button x-on:click="show = false" class="ml-auto">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
@@ -158,7 +169,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <span>{{ session('error') }}</span>
-                            <button @click="show = false" class="ml-auto">
+                            <button x-on:click="show = false" class="ml-auto">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
@@ -173,7 +184,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 <span>Please fix the following errors:</span>
-                                <button @click="show = false" class="ml-auto">
+                                <button x-on:click="show = false" class="ml-auto">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
@@ -192,7 +203,7 @@
             <footer class="border-t border-slate-100 bg-white">
                 <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 text-xs text-slate-500">
                     <p>© {{ date('Y') }} Minimal ERP. All rights reserved.</p>
-                    <p>v0.1 • Flat UI preview</p>
+                    <p>Created by <a href="https://yourin.my.id">Yourin</a></p>
                 </div>
             </footer>
         </div>

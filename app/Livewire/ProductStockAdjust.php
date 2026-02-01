@@ -45,12 +45,12 @@ class ProductStockAdjust extends Component
         $this->validate();
 
         try {
-            $this->inventoryService->adjustStock(
-                $this->product->id,
-                $this->qty,
-                $this->type,
-                $this->notes
-            );
+            $this->inventoryService->adjustStock([
+                'product_id' => $this->product->id,
+                'qty' => $this->qty,
+                'type' => $this->type,
+                'notes' => $this->notes,
+            ]);
 
             session()->flash('success', 'Stock adjusted successfully.');
             $this->closeModal();

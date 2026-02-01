@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Tenant;
 use App\Models\Customer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -24,8 +23,8 @@ class InvoiceFactory extends Factory
         $total = $subtotal - $discount + $tax;
 
         return [
-            'tenant_id' => Tenant::factory(),
             'customer_id' => Customer::factory(),
+            'invoice_number' => strtoupper(fake()->unique()->bothify('INV-####-??')),
             'title' => fake()->optional()->sentence(4),
             'reference' => fake()->optional()->bothify('REF-####'),
             'subtotal' => round($subtotal, 2),

@@ -9,6 +9,9 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 
 // Public routes
@@ -48,6 +51,18 @@ Route::middleware('auth')->prefix('app')->group(function () {
 		return view('inventory.adjust', compact('products'));
 	})->name('inventory.adjust');
 	Route::post('inventory/adjust', [InventoryController::class, 'adjust'])->name('inventory.adjust.store');
+	
+	// Reports
+	Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+	
+	// Users & Roles (combined page with tabs)
+	Route::get('users', [UserController::class, 'index'])->name('users.index');
+	Route::post('users', [UserController::class, 'store'])->name('users.store');
+	Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+	Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+	
+	// Roles (within Users context)
+	Route::resource('roles', RoleController::class)->only(['index', 'store', 'update', 'destroy']);
 	
 	// Profile
 	Route::get('profile', [ProfileController::class, 'index'])->name('profile');

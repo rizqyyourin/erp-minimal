@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,12 +21,12 @@ class ProductFactory extends Factory
         $price = $cost * fake()->randomFloat(2, 1.3, 2.5);
 
         return [
-            'tenant_id' => Tenant::factory(),
             'name' => fake()->words(3, true),
             'sku' => strtoupper(fake()->bothify('SKU-####??')),
             'price' => round($price, 2),
             'cost' => round($cost, 2),
             'stock' => fake()->numberBetween(0, 100),
+            'min_stock' => fake()->numberBetween(5, 20),
             'category' => fake()->randomElement($categories),
             'description' => fake()->optional()->sentence(),
         ];
