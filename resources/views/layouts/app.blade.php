@@ -8,8 +8,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" integrity="sha512-w2pexnox96M1gL0Ija+K1Pc1HoF4DW/xFcKpKwlBW7P0mF7ZvDP7i0jPqsd5ZSvkijYEaqaQ3+r4o8IyYH0nNQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.7/cdn.min.js" integrity="sha512-lm7YTY+O+qLcbCR+4cdFJv3jXLW9L1nLS5z0+U/SkqbtfjhnbvnfFgUB7JRxGaWzyrOVQd4mjHgNsx3Rp3XIQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+        
+        /* HTML5 Dialog centering - relative to viewport */
+        dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+            max-height: 90vh;
+        }
+        
+        dialog::backdrop {
+            background: rgba(15, 23, 42, 0.5);
+        }
+    </style>
     @livewireStyles
     @stack('styles')
 </head>
@@ -103,7 +118,7 @@
                     <div class="flex items-center justify-end gap-3">
                         @auth
                         <div class="relative" x-data="{ open: false }">
-                            <button x-on:click="open = !open" class="flex items-center gap-3 rounded-2xl border border-slate-200 px-3 py-2 hover:border-slate-300">
+                            <button @click="open = !open" class="flex items-center gap-3 rounded-2xl border border-slate-200 px-3 py-2 hover:border-slate-300">
                                 <div class="text-right">
                                     <p class="text-sm font-semibold">{{ auth()->user()?->name ?? 'User' }}</p>
                                     <p class="text-xs text-slate-500">{{ auth()->user()?->email ?? '' }}</p>
@@ -112,9 +127,16 @@
                                     {{ strtoupper(substr(auth()->user()?->name ?? 'U', 0, 2)) }}
                                 </div>
                             </button>
-                            <div x-show="open" x-on:click.away="open = false" 
-                                class="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-100 bg-white shadow-lg"
-                                style="display: none;">
+                            <div x-show="open"
+                                 @click.away="open = false"
+                                 x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="transform opacity-0 scale-95"
+                                 x-transition:enter-end="transform opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="transform opacity-100 scale-100"
+                                 x-transition:leave-end="transform opacity-0 scale-95"
+                                 class="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-100 bg-white shadow-lg z-50"
+                                 style="display: none;">
                                 <div class="p-2 space-y-1">
                                     <a href="{{ route('profile') }}" class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -130,7 +152,7 @@
                                         <span>Delete account</span>
                                     </a>
                                     <div class="my-1 border-t border-slate-100"></div>
-                                    <form method="POST" action="{{ route('logout') }}">
+                                    <form method="POST" action="{{ route('logout') }}" class="block">
                                         @csrf
                                         <button type="submit" class="flex w-full items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -210,7 +232,6 @@
     </div>
 
     @livewireScripts
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js" integrity="sha512-Ogk8Y2cQhUJQF6UVx/F4WRzE7dHGnkvVGnzlQozY1UIQQCN7PCKt3ztBwF1j5R4d0RyYP1UFDoNFuIBqmoeVdg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     @stack('scripts')
 </body>
 </html>

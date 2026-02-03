@@ -341,13 +341,13 @@
                                 </div>
                             </div>
                             <div class="bg-slate-50 rounded-xl p-4 h-32 flex items-end justify-around">
-                                <div class="w-8 bg-slate-800 rounded-t" style="height: 40%"></div>
-                                <div class="w-8 bg-slate-800 rounded-t" style="height: 65%"></div>
-                                <div class="w-8 bg-slate-800 rounded-t" style="height: 45%"></div>
-                                <div class="w-8 bg-slate-800 rounded-t" style="height: 80%"></div>
-                                <div class="w-8 bg-slate-800 rounded-t" style="height: 55%"></div>
-                                <div class="w-8 bg-slate-500 rounded-t" style="height: 70%"></div>
-                                <div class="w-8 bg-slate-500 rounded-t" style="height: 90%"></div>
+                                <div class="w-8 bg-slate-800 rounded-t h-[40%]"></div>
+                                <div class="w-8 bg-slate-800 rounded-t h-[65%]"></div>
+                                <div class="w-8 bg-slate-800 rounded-t h-[45%]"></div>
+                                <div class="w-8 bg-slate-800 rounded-t h-[80%]"></div>
+                                <div class="w-8 bg-slate-800 rounded-t h-[55%]"></div>
+                                <div class="w-8 bg-slate-500 rounded-t h-[70%]"></div>
+                                <div class="w-8 bg-slate-500 rounded-t h-[90%]"></div>
                             </div>
                         </div>
                     </div>

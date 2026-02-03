@@ -58,7 +58,7 @@
                                 <td class="px-6 py-4 text-slate-500">{{ $user->created_at?->format('M d, Y') }}</td>
                                 <td class="px-6 py-4 text-right">
                                     @can('users.edit')
-                                    <button onclick="editUser({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ $user->email }}', {{ $user->role_id ?? 'null' }})" class="rounded-2xl border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 hover:border-slate-300 mr-2">Edit</button>
+                                    <button onclick="editUser({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ $user->email }}', {{ $user->role_id ?? 'null' }})" class="rounded-2xl border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 hover:border-slate-300 me-2">Edit</button>
                                     @endcan
                                     @can('users.delete')
                                     @if(auth()->id() !== $user->id)
@@ -146,7 +146,7 @@
     </div>
 
     {{-- Create User Modal --}}
-    <dialog id="createUserModal" class="rounded-3xl p-0 backdrop:bg-slate-900/50 m-0 max-h-[90vh] overflow-y-auto z-50 w-[90vw] max-w-md" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; padding: 0;">
+    <dialog id="createUserModal" class="rounded-3xl p-0 backdrop:bg-slate-900/50 m-0 max-h-[90vh] overflow-y-auto z-50 w-[90vw] max-w-md border-0">
         <div class="w-full max-w-md p-6">
             <h3 class="text-lg font-semibold text-slate-900 mb-4">Create New User</h3>
             <form action="{{ route('users.store') }}" method="POST">
@@ -195,7 +195,7 @@
     </dialog>
 
     {{-- Edit User Modal --}}
-    <dialog id="editUserModal" class="rounded-3xl p-0 backdrop:bg-slate-900/50 m-0 max-h-[90vh] overflow-y-auto z-50 w-[90vw] max-w-md" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; padding: 0;">
+    <dialog id="editUserModal" class="rounded-3xl p-0 backdrop:bg-slate-900/50 m-0 max-h-[90vh] overflow-y-auto z-50 w-[90vw] max-w-md border-0">
         <div class="w-full max-w-md p-6">
             <h3 class="text-lg font-semibold text-slate-900 mb-4">Edit User</h3>
             <form id="editUserForm" method="POST">
@@ -245,7 +245,7 @@
     </dialog>
 
     {{-- Delete User Modal --}}
-    <dialog id="deleteUserModal" class="rounded-3xl p-0 backdrop:bg-slate-900/50 m-0 max-h-[90vh] overflow-y-auto z-50 w-[90vw] max-w-md" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; padding: 0;">
+    <dialog id="deleteUserModal" class="rounded-3xl p-0 backdrop:bg-slate-900/50 m-0 max-h-[90vh] overflow-y-auto z-50 w-[90vw] max-w-md border-0">
         <div class="w-full max-w-md p-6">
             <div class="text-center mb-6">
                 <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 mb-4">
@@ -272,7 +272,7 @@
     </dialog>
 
     {{-- Delete Role Modal --}}
-    <dialog id="deleteRoleModal" class="rounded-3xl p-0 backdrop:bg-slate-900/50 m-0 max-h-[90vh] overflow-y-auto z-50 w-[90vw] max-w-md" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; padding: 0;">
+    <dialog id="deleteRoleModal" class="rounded-3xl p-0 backdrop:bg-slate-900/50 m-0 max-h-[90vh] overflow-y-auto z-50 w-[90vw] max-w-md border-0">
         <div class="w-full max-w-md p-6">
             <div class="text-center mb-6">
                 <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 mb-4">
@@ -299,7 +299,7 @@
     </dialog>
 
     {{-- Create Role Modal --}}
-    <dialog id="createRoleModal" class="rounded-3xl p-0 backdrop:bg-slate-900/50 m-0 max-h-[90vh] overflow-y-auto z-50 w-[90vw] max-w-lg" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; padding: 0;">
+    <dialog id="createRoleModal" class="rounded-3xl p-0 backdrop:bg-slate-900/50 m-0 max-h-[90vh] overflow-y-auto z-50 w-[90vw] max-w-lg border-0">
         <div class="w-full max-w-lg p-6">
             <h3 class="text-lg font-semibold text-slate-900 mb-4">Create New Role</h3>
             <form action="{{ route('roles.store') }}" method="POST">
@@ -341,7 +341,7 @@
     </dialog>
 
     {{-- Edit Role Modal --}}
-    <dialog id="editRoleModal" class="rounded-3xl p-0 backdrop:bg-slate-900/50 m-0 max-h-[90vh] overflow-y-auto z-50 w-[90vw] max-w-lg" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; padding: 0;">
+    <dialog id="editRoleModal" class="rounded-3xl p-0 backdrop:bg-slate-900/50 m-0 max-h-[90vh] overflow-y-auto z-50 w-[90vw] max-w-lg border-0">
         <div class="w-full max-w-lg p-6">
             <h3 class="text-lg font-semibold text-slate-900 mb-4">Edit Role</h3>
             <form id="editRoleForm" method="POST">
@@ -384,7 +384,7 @@
     </dialog>
 
     {{-- View Users by Role Modal --}}
-    <dialog id="viewRoleUsersModal" class="rounded-3xl p-0 backdrop:bg-slate-900/50 m-0 max-h-[90vh] overflow-y-auto z-50 w-[90vw] max-w-lg" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; padding: 0;">
+    <dialog id="viewRoleUsersModal" class="rounded-3xl p-0 backdrop:bg-slate-900/50 m-0 max-h-[90vh] overflow-y-auto z-50 w-[90vw] max-w-lg border-0">
         <div class="w-full max-w-lg p-6">
             <h3 class="text-lg font-semibold text-slate-900 mb-4">Users with Role: <span id="viewRoleName"></span></h3>
             <div id="viewRoleUsersList" class="space-y-3 max-h-96 overflow-y-auto">
