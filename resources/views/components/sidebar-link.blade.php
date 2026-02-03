@@ -1,6 +1,11 @@
-@props(['href' => '#', 'label' => '', 'active' => false])
+@props(['href' => '#', 'label' => '', 'active' => false, 'permission' => null])
 
 @php
+    $user = auth()->user();
+    if ($permission && (!$user || !$user->hasPermission($permission))) {
+        return;
+    }
+    
     $baseClasses = 'group flex items-center gap-3 rounded-2xl px-4 py-2 text-sm font-semibold transition';
     $stateClasses = $active
         ? 'bg-slate-900 text-white shadow-sm'

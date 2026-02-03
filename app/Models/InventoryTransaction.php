@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class InventoryTransaction extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'product_id',
         'qty',
@@ -26,8 +27,8 @@ class InventoryTransaction extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function invoice()
+    public function reference()
     {
-        return $this->belongsTo(Invoice::class, 'reference_id');
+        return $this->morphTo();
     }
 }

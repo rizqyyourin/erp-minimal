@@ -26,21 +26,21 @@
             <div class="px-6">
                 <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Core</p>
                 <nav class="flex flex-col gap-1">
-                    <x-sidebar-link href="{{ route('dashboard') }}" label="Overview" :active="request()->routeIs('dashboard')">
+                    <x-sidebar-link href="{{ route('dashboard') }}" label="Overview" :active="request()->routeIs('dashboard')" permission="dashboard.view">
                         <x-slot name="icon">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M4.5 10.5V21h5.25v-6.75h4.5V21H19.5V10.5" />
                             </svg>
                         </x-slot>
                     </x-sidebar-link>
-                    <x-sidebar-link href="{{ route('products.index') }}" label="Products" :active="request()->routeIs('products.*')">
+                    <x-sidebar-link href="{{ route('products.index') }}" label="Products" :active="request()->routeIs('products.*')" permission="products.view">
                         <x-slot name="icon">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
                             </svg>
                         </x-slot>
                     </x-sidebar-link>
-                    <x-sidebar-link href="{{ route('customers.index') }}" label="Customers" :active="request()->routeIs('customers.*')">
+                    <x-sidebar-link href="{{ route('customers.index') }}" label="Customers" :active="request()->routeIs('customers.*')" permission="customers.view">
                         <x-slot name="icon">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -48,35 +48,35 @@
                             </svg>
                         </x-slot>
                     </x-sidebar-link>
-                    <x-sidebar-link href="{{ route('invoices.index') }}" label="Invoices" :active="request()->routeIs('invoices.*')">
+                    <x-sidebar-link href="{{ route('invoices.index') }}" label="Invoices" :active="request()->routeIs('invoices.*')" permission="invoices.view">
                         <x-slot name="icon">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h8M8 11h5M9 21h6a3 3 0 003-3V6a3 3 0 00-3-3H9a3 3 0 00-3 3v12a3 3 0 003 3z" />
                             </svg>
                         </x-slot>
                     </x-sidebar-link>
-                    <x-sidebar-link href="{{ route('inventory.index') }}" label="Inventory" :active="request()->routeIs('inventory.*')">
+                    <x-sidebar-link href="{{ route('inventory.index') }}" label="Inventory" :active="request()->routeIs('inventory.*')" permission="inventory.view">
                         <x-slot name="icon">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0H4" />
                             </svg>
                         </x-slot>
                     </x-sidebar-link>
-                    <x-sidebar-link href="{{ route('reports.index') }}" label="Reports" :active="request()->routeIs('reports.*')">
+                    <x-sidebar-link href="{{ route('reports.index') }}" label="Reports" :active="request()->routeIs('reports.*')" permission="reports.view">
                         <x-slot name="icon">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                             </svg>
                         </x-slot>
                     </x-sidebar-link>
-                    <x-sidebar-link href="{{ route('users.index') }}" label="Users" :active="request()->routeIs('users.*')">
+                    <x-sidebar-link href="{{ route('users.index') }}" label="Users" :active="request()->routeIs('users.*')" permission="users.view">
                         <x-slot name="icon">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                         </x-slot>
                     </x-sidebar-link>
-                    <x-sidebar-link href="{{ route('suppliers.index') }}" label="Suppliers" :active="request()->routeIs('suppliers.*')">
+                    <x-sidebar-link href="{{ route('suppliers.index') }}" label="Suppliers" :active="request()->routeIs('suppliers.*')" permission="suppliers.view">
                         <x-slot name="icon">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />

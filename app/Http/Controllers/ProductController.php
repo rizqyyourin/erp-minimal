@@ -12,16 +12,12 @@ class ProductController extends Controller
         $query = Product::query();
 
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('sku', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%'.$request->search.'%')
+                ->orWhere('sku', 'like', '%'.$request->search.'%');
         }
 
         if ($request->filled('status')) {
-            if ($request->status === 'low_stock') {
-                $query->where('stock', '<=', 10);
-            } elseif ($request->status === 'critical') {
-                $query->where('stock', '<', 5);
-            }
+            $query->byStockStatus($request->status);
         }
 
         $products = $query->latest()->paginate(20);
@@ -66,7 +62,7 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'sku' => 'required|string|max:50|unique:products,sku,' . $product->id,
+            'sku' => 'required|string|max:50|unique:products,sku,'.$product->id,
             'price' => 'required|numeric|min:0',
             'cost' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',

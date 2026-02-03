@@ -21,7 +21,9 @@
                     </select>
                     <button type="submit" class="rounded-xl border border-slate-200 bg-white px-4 py-2 h-10 text-sm font-semibold text-slate-700 hover:border-slate-300">Filter</button>
                 </form>
+                @can('inventory.adjust')
                 <a href="{{ route('inventory.adjust') }}" class="rounded-2xl bg-slate-900 px-4 py-2 h-10 text-sm font-semibold text-white hover:bg-slate-800 flex items-center">+ Manual adjust</a>
+                @endcan
             </div>
         </x-slot>
     </x-page-heading>

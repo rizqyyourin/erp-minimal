@@ -26,6 +26,12 @@ class Role extends Model
         if (!$this->permissions) {
             return false;
         }
+
+        // Super admin with wildcard permission has access to everything
+        if (in_array('*', $this->permissions)) {
+            return true;
+        }
+
         return in_array($permission, $this->permissions);
     }
 }

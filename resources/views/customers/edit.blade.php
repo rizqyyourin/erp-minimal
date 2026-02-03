@@ -68,9 +68,11 @@
                         Cancel
                     </a>
                 </div>
+                @can('customers.delete')
                 <button type="button" onclick="document.getElementById('delete-form').submit()" class="rounded-xl border border-red-300 px-6 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50">
                     Delete Customer
                 </button>
+                @endcan
             </div>
         </form>
 

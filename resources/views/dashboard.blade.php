@@ -5,7 +5,9 @@
 @section('content')
     <x-page-heading title="Today" description="Snapshot of sales, cashflow, and stock health">
         <x-slot name="actions">
+            @can('invoices.create')
             <a href="{{ route('invoices.create') }}" class="rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">+ New invoice</a>
+            @endcan
         </x-slot>
     </x-page-heading>
 
@@ -23,7 +25,7 @@
                     <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Pipeline</p>
                     <h2 class="text-lg font-semibold text-slate-900">Recent Invoices</h2>
                 </div>
-                <a href="{{ route('invoices.create') }}" class="text-sm font-semibold text-slate-500 hover:text-slate-900">View all</a>
+                <a href="{{ route('invoices.index') }}" class="text-sm font-semibold text-slate-500 hover:text-slate-900">View all</a>
             </div>
             <div class="mt-6 space-y-4">
                 @forelse($recentInvoices as $invoice)
@@ -48,7 +50,9 @@
                 @empty
                     <div class="py-8 text-center">
                         <p class="text-sm text-slate-500">No invoices yet</p>
+                        @can('invoices.create')
                         <a href="{{ route('invoices.create') }}" class="mt-2 inline-block text-sm font-semibold text-slate-900">Create your first invoice</a>
+                        @endcan
                     </div>
                 @endforelse
             </div>

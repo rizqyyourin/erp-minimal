@@ -69,5 +69,22 @@ class Invoice extends Model
                 );
             }
         });
+
+        // Cascade soft deletes to items and payments
+        static::deleting(function ($invoice) {
+            if ($invoice->isForceDeleting()) {
+                $invoice->items()->forceDelete();
+                $invoice->payments()->forceDelete();
+            } else {
+                $invoice->items()->delete();
+                $invoice->payments()->delete();
+            }
+        });
+
+        // Restore items and payments when invoice is restored
+        static::restoring(function ($invoice) {
+            $invoice->items()->withTrashed()->restore();
+            $invoice->payments()->withTrashed()->restore();
+        });
     }
 }

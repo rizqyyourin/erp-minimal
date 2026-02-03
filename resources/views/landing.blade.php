@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <!-- SEO Meta Tags -->
-    <title>Minimal ERP - ERP Software for SMEs in Indonesia | Business Management Solution</title>
+    <title>Minimal ERP</title>
     <meta name="description" content="Minimal ERP is the best ERP software in Indonesia for SMEs. Manage stock, sales, purchases, invoices, and finance in one platform. 14-day free trial.">
     <meta name="keywords" content="ERP software Indonesia, SME ERP, inventory app, accounting software, sales management, online invoice, inventory system, business management software, POS app, online ERP">
     <meta name="author" content="Minimal ERP">

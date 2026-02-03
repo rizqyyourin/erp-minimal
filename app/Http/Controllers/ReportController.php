@@ -77,10 +77,13 @@ class ReportController extends Controller
 
     private function getExpenses($dateRange)
     {
-        return DB::table('inventory_transactions')
-            ->where('type', 'adjust')
-            ->whereBetween('created_at', [$dateRange['start'], $dateRange['end']])
-            ->sum(DB::raw('ABS(qty)'));
+        // Calculate COGS from sold items: qty * product cost
+        return InvoiceItem::whereHas('invoice', function ($query) use ($dateRange) {
+                $query->whereBetween('created_at', [$dateRange['start'], $dateRange['end']])
+                      ->whereIn('status', ['paid', 'partial']);
+            })
+            ->join('products', 'invoice_items.product_id', '=', 'products.id')
+            ->sum(DB::raw('invoice_items.qty * products.cost'));
     }
 
     private function getMonthlyData($startDate)
@@ -88,13 +91,25 @@ class ReportController extends Controller
         $data = [];
         for ($i = 0; $i < 12; $i++) {
             $month = $startDate->copy()->addMonths($i);
-            $revenue = Payment::whereYear('created_at', $month->year)
-                ->whereMonth('created_at', $month->month)
+            
+            // Get revenue from payments
+            $revenue = Payment::whereYear('paid_at', $month->year)
+                ->whereMonth('paid_at', $month->month)
                 ->sum('amount');
+            
+            // Get COGS for the same period
+            $cogs = InvoiceItem::whereHas('invoice', function ($query) use ($month) {
+                    $query->whereYear('created_at', $month->year)
+                          ->whereMonth('created_at', $month->month)
+                          ->whereIn('status', ['paid', 'partial']);
+                })
+                ->join('products', 'invoice_items.product_id', '=', 'products.id')
+                ->sum(DB::raw('invoice_items.qty * products.cost'));
             
             $data['labels'][] = $month->format('M Y');
             $data['revenue'][] = $revenue;
-            $data['profit'][] = $revenue * 0.7;
+            $data['expenses'][] = $cogs;
+            $data['profit'][] = $revenue - $cogs;
         }
         return $data;
     }

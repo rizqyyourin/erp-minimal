@@ -10,6 +10,10 @@ class Product extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public const STOCK_CRITICAL_THRESHOLD = 5;
+
+    public const STOCK_LOW_THRESHOLD = 10;
+
     protected $fillable = [
         'name',
         'sku',
@@ -40,12 +44,22 @@ class Product extends Model
 
     public function getStatusAttribute()
     {
-        if ($this->stock < 5) {
+        if ($this->stock < self::STOCK_CRITICAL_THRESHOLD) {
             return 'critical';
         }
-        if ($this->stock <= 10) {
+        if ($this->stock <= self::STOCK_LOW_THRESHOLD) {
             return 'low_stock';
         }
+
         return 'active';
+    }
+
+    public function scopeByStockStatus($query, string $status)
+    {
+        return match ($status) {
+            'low_stock' => $query->where('stock', '<=', self::STOCK_LOW_THRESHOLD),
+            'critical' => $query->where('stock', '<', self::STOCK_CRITICAL_THRESHOLD),
+            default => $query,
+        };
     }
 }

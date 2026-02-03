@@ -6,17 +6,19 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
     public function index(Request $request)
     {
         $tab = $request->get('tab', 'users');
-        
+
         $users = User::with('role')->get();
-        $roles = Role::withCount('users')->get();
+        $roles = Role::withCount('users')->orderBy('name')->get();
         $allPermissions = $this->getAllPermissions();
-        
+
         return view('users.index', compact('users', 'roles', 'allPermissions', 'tab'));
     }
 
@@ -25,10 +27,11 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
+            'password' => ['required', Password::min(6)->mixedCase()->numbers()->symbols()],
             'role_id' => 'nullable|exists:roles,id',
         ]);
 
+        $validated['password'] = Hash::make($validated['password']);
         User::create($validated);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
@@ -38,15 +41,15 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|min:6',
+            'email' => 'required|email|unique:users,email,'.$user->id,
+            'password' => ['nullable', Password::min(6)->mixedCase()->numbers()->symbols()],
             'role_id' => 'nullable|exists:roles,id',
         ]);
 
         if (empty($validated['password'])) {
             unset($validated['password']);
         } else {
-            $validated['password'] = bcrypt($validated['password']);
+            $validated['password'] = Hash::make($validated['password']);
         }
 
         $user->update($validated);
@@ -64,6 +67,16 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+    }
+
+    public function getUsersByRole(Role $role)
+    {
+        $users = User::where('role_id', $role->id)->with('role')->get();
+
+        return response()->json([
+            'role' => $role,
+            'users' => $users,
+        ]);
     }
 
     private function getAllPermissions()

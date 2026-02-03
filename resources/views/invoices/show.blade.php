@@ -109,6 +109,7 @@
             $paidAmount = $invoice->payments->sum('amount');
             $remainingAmount = $invoice->total - $paidAmount;
         @endphp
+        @can('payments.create')
         <div class="rounded-3xl border border-slate-100 bg-white p-6">
             <h3 class="text-lg font-semibold mb-4">Record Payment</h3>
             <div class="mb-4 p-3 bg-amber-50 rounded-2xl text-sm">
@@ -138,9 +139,11 @@
                 </button>
             </form>
         </div>
+        @endcan
         @endif
 
         @if($invoice->status !== 'cancelled' && $invoice->status !== 'paid')
+        @can('invoices.cancel')
         <div class="rounded-3xl border border-rose-100 bg-white p-6">
             <h3 class="text-lg font-semibold mb-4 text-rose-700">Cancel Invoice</h3>
             <p class="text-sm text-slate-500 mb-4">This will revert stock changes</p>
@@ -152,6 +155,7 @@
                 </button>
             </form>
         </div>
+        @endcan
         @endif
     </div>
 </div>

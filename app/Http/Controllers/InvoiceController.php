@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Product;
 use App\Services\InvoiceService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
@@ -72,6 +73,15 @@ class InvoiceController extends Controller
             'items.*.price' => 'required|numeric|min:0',
         ]);
 
+        // Validate stock availability before creating invoice
+        foreach ($validated['items'] as $item) {
+            $product = Product::findOrFail($item['product_id']);
+            if ($product->stock < $item['qty']) {
+                return back()->withInput()
+                    ->withErrors(['error' => "Insufficient stock for product: {$product->name}. Available: {$product->stock}, Required: {$item['qty']}"]);
+            }
+        }
+
         try {
             $invoice = $this->invoiceService->createInvoice($validated);
 
@@ -120,12 +130,34 @@ class InvoiceController extends Controller
             'due_date' => 'nullable|date',
             'payment_method' => 'nullable|string|max:50',
             'status' => 'required|in:draft,pending,partial,paid,overdue,cancelled',
+            'items' => 'required|array|min:1',
+            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.qty' => 'required|integer|min:1',
+            'items.*.price' => 'required|numeric|min:0',
         ]);
 
-        $invoice->update($validated);
+        // Validate stock availability for new items (accounting for current stock + returned stock)
+        $currentItems = $invoice->items->keyBy('product_id');
+        foreach ($validated['items'] as $item) {
+            $product = Product::findOrFail($item['product_id']);
+            $currentQty = $currentItems[$item['product_id']]->qty ?? 0;
+            $availableStock = $product->stock + $currentQty; // Stock now + what will be returned
+            
+            if ($availableStock < $item['qty']) {
+                return back()->withInput()
+                    ->withErrors(['error' => "Insufficient stock for product: {$product->name}. Available: {$availableStock}, Required: {$item['qty']}"]);
+            }
+        }
 
-        return redirect()->route('invoices.show', $invoice->id)
-            ->with('success', 'Invoice updated successfully.');
+        try {
+            $invoice = $this->invoiceService->updateInvoice($invoice, $validated);
+
+            return redirect()->route('invoices.show', $invoice->id)
+                ->with('success', 'Invoice updated successfully.');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->withErrors(['error' => $e->getMessage()]);
+        }
     }
 
     public function destroy(Invoice $invoice)
@@ -135,10 +167,23 @@ class InvoiceController extends Controller
                 ->with('error', 'Only draft invoices can be deleted.');
         }
 
-        $invoice->delete();
+        try {
+            DB::transaction(function () use ($invoice) {
+                // Revert stock for items
+                foreach ($invoice->items as $item) {
+                    $product = Product::findOrFail($item->product_id);
+                    $product->increment('stock', $item->qty);
+                }
+                
+                $invoice->items()->delete();
+                $invoice->delete();
+            });
 
-        return redirect()->route('invoices.index')
-            ->with('success', 'Invoice deleted successfully.');
+            return redirect()->route('invoices.index')
+                ->with('success', 'Invoice deleted successfully.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
     }
 
     public function cancel(Invoice $invoice)

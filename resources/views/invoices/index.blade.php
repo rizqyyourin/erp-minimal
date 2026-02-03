@@ -26,9 +26,11 @@
                 Filter
             </button>
         </form>
+        @can('invoices.create')
         <a href="{{ route('invoices.create') }}" class="rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white">
             + New Invoice
         </a>
+        @endcan
     </div>
 
     <div class="overflow-hidden rounded-2xl border border-slate-100">

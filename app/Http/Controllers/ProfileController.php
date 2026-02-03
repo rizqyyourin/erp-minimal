@@ -19,14 +19,14 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'current_password' => ['nullable', 'required_with:password'],
-            'password' => ['nullable', 'confirmed', Password::defaults()],
+            'password' => ['nullable', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols()],
         ]);
 
         // Check current password if user wants to change password
         if ($request->filled('current_password')) {
-            if (!Hash::check($request->current_password, $user->password)) {
+            if (! Hash::check($request->current_password, $user->password)) {
                 return back()->withErrors(['current_password' => 'Current password is incorrect.']);
             }
         }

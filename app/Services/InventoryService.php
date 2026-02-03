@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Product;
+use App\Exceptions\InsufficientStockException;
 use App\Models\InventoryTransaction;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 
 class InventoryService
@@ -12,15 +13,16 @@ class InventoryService
     {
         return DB::transaction(function () use ($data) {
             $product = Product::findOrFail($data['product_id']);
+            $qty = abs($data['qty']);
 
             // Apply stock adjustment
             if ($data['type'] === 'in') {
-                $product->increment('stock', abs($data['qty']));
+                $product->increment('stock', $qty);
             } elseif ($data['type'] === 'out') {
-                if ($product->stock < abs($data['qty'])) {
-                    throw new \Exception("Insufficient stock for adjustment");
+                if ($product->stock < $qty) {
+                    throw new InsufficientStockException($product->name, $product->stock, $qty);
                 }
-                $product->decrement('stock', abs($data['qty']));
+                $product->decrement('stock', $qty);
             } elseif ($data['type'] === 'adjust') {
                 $product->update(['stock' => $data['qty']]);
             }

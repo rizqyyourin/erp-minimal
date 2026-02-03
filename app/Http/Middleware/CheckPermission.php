@@ -16,7 +16,7 @@ class CheckPermission
             return redirect()->route('login');
         }
         
-        if (!$user->hasPermission($permission) && $user->role?->name !== 'Admin') {
+        if (!$user->hasPermission($permission)) {
             abort(403, 'Unauthorized action.');
         }
         

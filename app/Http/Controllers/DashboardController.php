@@ -31,13 +31,13 @@ class DashboardController extends Controller
         
         // Calculate stats
         $stats = [
-            'mrr' => Payment::whereMonth('created_at', now()->month)
+            'mrr' => Payment::whereMonth('paid_at', now()->month)
                 ->sum('amount'),
             'outstanding_invoices_count' => Invoice::where('status', 'pending')->count(),
             'outstanding_invoices_amount' => Invoice::where('status', 'pending')->sum('total'),
             'low_stock_count' => Product::whereColumn('stock', '<=', 'min_stock')->count(),
-            'payments_today_amount' => Payment::whereDate('created_at', today())->sum('amount'),
-            'payments_today_count' => Payment::whereDate('created_at', today())->count(),
+            'payments_today_amount' => Payment::whereDate('paid_at', today())->sum('amount'),
+            'payments_today_count' => Payment::whereDate('paid_at', today())->count(),
         ];
         
         return view('dashboard', compact('recentInvoices', 'criticalStock', 'stats', 'user'));

@@ -39,9 +39,19 @@
 
                     <div>
                         <label for="password" class="block text-sm font-semibold text-slate-900">Password</label>
-                        <div class="mt-2">
+                        <div class="mt-2 relative">
                             <input id="password" name="password" type="password" autocomplete="current-password" required 
-                                class="block w-full rounded-xl border-slate-200 px-4 py-2.5 text-slate-900 placeholder-slate-400 focus:border-slate-400 focus:ring-0 @error('password') border-red-500 @enderror">
+                                class="block w-full rounded-xl border-slate-200 px-4 py-2.5 pr-10 text-slate-900 placeholder-slate-400 focus:border-slate-400 focus:ring-0 @error('password') border-red-500 @enderror">
+                            <button type="button" onclick="togglePassword('password')" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 focus:outline-none">
+                                <svg id="eye-password" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                <svg id="eye-slash-password" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.572-2.977m2.197-2.197A10.05 10.05 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.05 10.05 0 01-2.033 3.525M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
+                                </svg>
+                            </button>
                         </div>
                         @error('password')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -70,5 +80,22 @@
             </div>
         </div>
     </div>
+    <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const eyeIcon = document.getElementById('eye-' + inputId);
+            const eyeSlashIcon = document.getElementById('eye-slash-' + inputId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeIcon.classList.add('hidden');
+                eyeSlashIcon.classList.remove('hidden');
+            } else {
+                input.type = 'password';
+                eyeIcon.classList.remove('hidden');
+                eyeSlashIcon.classList.add('hidden');
+            }
+        }
+    </script>
 </body>
 </html>

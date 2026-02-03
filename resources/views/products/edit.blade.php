@@ -99,9 +99,11 @@
                         Cancel
                     </a>
                 </div>
+                @can('products.delete')
                 <button type="button" onclick="showDeleteModal()" class="rounded-xl border border-red-300 px-6 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50">
                     Delete Product
                 </button>
+                @endcan
             </div>
         </form>
 

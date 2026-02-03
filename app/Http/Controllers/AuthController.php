@@ -21,7 +21,7 @@ class AuthController extends Controller
             'company_name' => 'nullable|string|max:255',
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', 'confirmed', Password::min(8)],
+            'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols()],
         ]);
 
         // Create user
@@ -50,11 +50,12 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+
             return redirect()->intended(route('dashboard'));
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'The email or password you entered is incorrect.',
         ])->onlyInput('email');
     }
 
@@ -63,6 +64,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect()->route('landing');
     }
 }

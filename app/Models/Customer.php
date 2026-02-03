@@ -24,7 +24,7 @@ class Customer extends Model
 
     public function getOutstandingBalanceAttribute()
     {
-        return $this->invoices()
+        return $this->invoices
             ->whereIn('status', ['pending', 'partial', 'overdue'])
             ->sum('total');
     }

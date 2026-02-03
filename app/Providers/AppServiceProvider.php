@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,10 +22,19 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Force HTTPS in production (check multiple conditions)
-        if ($this->app->environment('production') || 
+        if ($this->app->environment('production') ||
             str_starts_with(config('app.url', ''), 'https://') ||
             request()->header('X-Forwarded-Proto') === 'https') {
             URL::forceScheme('https');
         }
+
+        // Blade directive for permission check
+        Blade::directive('can', function ($expression) {
+            return "<?php if(auth()->user() && auth()->user()->hasPermission($expression)): ?>";
+        });
+
+        Blade::directive('endcan', function () {
+            return '<?php endif; ?>';
+        });
     }
 }
