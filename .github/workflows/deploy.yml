@@ -39,12 +39,6 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --no-interaction --prefer-dist --no-progress --no-scripts
 
-      - name: Prepare application bootstrap
-        run: |
-          cp .env.example .env
-          php artisan key:generate --force
-          php artisan package:discover --ansi
-
       - name: Install frontend dependencies
         run: npm ci
 
