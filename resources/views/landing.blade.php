@@ -413,8 +413,6 @@
                             <p class="text-slate-600 text-lg max-w-md leading-relaxed">Monitor stock real-time, set minimum stock levels, and get notified when stock is low.</p>
                         </div>
                         <div class="flex gap-3 mt-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">
-                            <span class="px-4 py-1.5 bg-slate-100 rounded-full text-xs font-bold text-slate-600 uppercase tracking-wider">Real-time Sync</span>
-                            <span class="px-4 py-1.5 bg-slate-100 rounded-full text-xs font-bold text-slate-600 uppercase tracking-wider">Low Stock Alert</span>
                         </div>
                     </div>
                     <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-slate-50 rounded-full opacity-50 group-hover:scale-125 transition-transform duration-1000"></div>
@@ -513,8 +511,7 @@
             
             <div class="relative">
                 <!-- Connector Line -->
-                <div class="hidden lg:block absolute top-[45px] left-0 right-0 h-0.5 bg-slate-100 relative z-0"></div>
-                
+<div class="hidden lg:block absolute left-[16.666667%] right-[16.666667%] h-0.5 bg-slate-100 z-0" style="top: 150px;"></div>                
                 <div class="grid md:grid-cols-3 gap-8 lg:gap-12 relative z-10">
                     <!-- Step 1 -->
                     <div class="group h-full" data-aos="fade-up" data-aos-delay="0">
