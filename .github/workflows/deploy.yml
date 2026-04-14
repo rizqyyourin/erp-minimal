@@ -18,6 +18,7 @@ jobs:
       APP_HOST: erp.yourin.my.id
       BRANCH: main
       PHP_FPM_SERVICE: php8.2-fpm
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout repository
@@ -33,7 +34,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install PHP dependencies
