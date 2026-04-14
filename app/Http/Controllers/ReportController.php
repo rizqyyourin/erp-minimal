@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Payment;
-use App\Models\Product;
 use App\Models\Customer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -23,7 +22,7 @@ class ReportController extends Controller
         $expenses = $this->getExpenses($dateRange);
         $profit = $revenue - $expenses;
         
-        $monthlyData = $this->getMonthlyData($dateRange['start']);
+        $monthlyData = $this->getMonthlyData((int) $dateRange['start']->year);
         $topProducts = $this->getTopProducts($dateRange);
         $customerStats = $this->getCustomerStats($dateRange);
         
@@ -77,34 +76,42 @@ class ReportController extends Controller
 
     private function getExpenses($dateRange)
     {
-        // Calculate COGS from sold items: qty * product cost
-        return InvoiceItem::whereHas('invoice', function ($query) use ($dateRange) {
-                $query->whereBetween('created_at', [$dateRange['start'], $dateRange['end']])
-                      ->whereIn('status', ['paid', 'partial']);
-            })
+        return InvoiceItem::query()
+            ->join('invoices', 'invoice_items.invoice_id', '=', 'invoices.id')
             ->join('products', 'invoice_items.product_id', '=', 'products.id')
+            ->whereBetween('invoices.created_at', [$dateRange['start'], $dateRange['end']])
+            ->whereIn('invoices.status', ['paid', 'partial'])
             ->sum(DB::raw('invoice_items.qty * products.cost'));
     }
 
-    private function getMonthlyData($startDate)
+    private function getMonthlyData(int $year)
     {
-        $data = [];
-        for ($i = 0; $i < 12; $i++) {
-            $month = $startDate->copy()->addMonths($i);
-            
-            // Get revenue from payments
-            $revenue = Payment::whereYear('paid_at', $month->year)
-                ->whereMonth('paid_at', $month->month)
-                ->sum('amount');
-            
-            // Get COGS for the same period
-            $cogs = InvoiceItem::whereHas('invoice', function ($query) use ($month) {
-                    $query->whereYear('created_at', $month->year)
-                          ->whereMonth('created_at', $month->month)
-                          ->whereIn('status', ['paid', 'partial']);
-                })
-                ->join('products', 'invoice_items.product_id', '=', 'products.id')
-                ->sum(DB::raw('invoice_items.qty * products.cost'));
+        $revenueByMonth = Payment::query()
+            ->selectRaw('EXTRACT(MONTH FROM paid_at) as month_number, SUM(amount) as total_revenue')
+            ->whereYear('paid_at', $year)
+            ->groupByRaw('EXTRACT(MONTH FROM paid_at)')
+            ->pluck('total_revenue', 'month_number');
+
+        $expensesByMonth = InvoiceItem::query()
+            ->join('invoices', 'invoice_items.invoice_id', '=', 'invoices.id')
+            ->join('products', 'invoice_items.product_id', '=', 'products.id')
+            ->selectRaw('EXTRACT(MONTH FROM invoices.created_at) as month_number, SUM(invoice_items.qty * products.cost) as total_expenses')
+            ->whereYear('invoices.created_at', $year)
+            ->whereIn('invoices.status', ['paid', 'partial'])
+            ->groupByRaw('EXTRACT(MONTH FROM invoices.created_at)')
+            ->pluck('total_expenses', 'month_number');
+
+        $data = [
+            'labels' => [],
+            'revenue' => [],
+            'expenses' => [],
+            'profit' => [],
+        ];
+
+        for ($monthNumber = 1; $monthNumber <= 12; $monthNumber++) {
+            $month = Carbon::create($year, $monthNumber, 1)->startOfMonth();
+            $revenue = (float) ($revenueByMonth[$monthNumber] ?? 0);
+            $cogs = (float) ($expensesByMonth[$monthNumber] ?? 0);
             
             $data['labels'][] = $month->format('M Y');
             $data['revenue'][] = $revenue;
@@ -141,14 +148,19 @@ class ReportController extends Controller
 
     private function getInvoiceStats($dateRange)
     {
+        $stats = Invoice::query()
+            ->whereBetween('created_at', [$dateRange['start'], $dateRange['end']])
+            ->selectRaw('COUNT(*) as total')
+            ->selectRaw("SUM(CASE WHEN status = 'paid' THEN 1 ELSE 0 END) as paid")
+            ->selectRaw("SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending")
+            ->selectRaw("SUM(CASE WHEN status = 'overdue' THEN 1 ELSE 0 END) as overdue")
+            ->first();
+
         return [
-            'total' => Invoice::whereBetween('created_at', [$dateRange['start'], $dateRange['end']])->count(),
-            'paid' => Invoice::whereBetween('created_at', [$dateRange['start'], $dateRange['end']])
-                ->where('status', 'paid')->count(),
-            'pending' => Invoice::whereBetween('created_at', [$dateRange['start'], $dateRange['end']])
-                ->where('status', 'pending')->count(),
-            'overdue' => Invoice::whereBetween('created_at', [$dateRange['start'], $dateRange['end']])
-                ->where('status', 'overdue')->count(),
+            'total' => (int) ($stats->total ?? 0),
+            'paid' => (int) ($stats->paid ?? 0),
+            'pending' => (int) ($stats->pending ?? 0),
+            'overdue' => (int) ($stats->overdue ?? 0),
         ];
     }
 }

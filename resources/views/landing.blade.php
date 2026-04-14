@@ -289,10 +289,6 @@
                         <span class="relative z-10">Start 14-Day Free Trial</span>
                         <i class="ph ph-arrow-right text-xl relative z-10 group-hover:translate-x-1 transition-transform"></i>
                     </a>
-                    <a href="#demo" class="inline-flex items-center gap-2 rounded-full border-2 border-slate-200 bg-white px-8 py-4 text-lg font-semibold text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition-all">
-                        <i class="ph ph-play-circle text-2xl text-slate-900"></i>
-                        <span>View Demo</span>
-                    </a>
                 </div>
                 
                 <p class="mt-4 text-sm text-slate-500">No credit card required • Setup in 5 minutes</p>
@@ -511,7 +507,7 @@
             
             <div class="relative">
                 <!-- Connector Line -->
-<div class="hidden lg:block absolute left-[16.666667%] right-[16.666667%] h-0.5 bg-slate-100 z-0" style="top: 150px;"></div>                
+                <div class="hidden lg:block absolute left-[16.666667%] right-[16.666667%] h-0.5 bg-slate-100 z-0" style="top: 150px;"></div>                
                 <div class="grid md:grid-cols-3 gap-8 lg:gap-12 relative z-10">
                     <!-- Step 1 -->
                     <div class="group h-full" data-aos="fade-up" data-aos-delay="0">
