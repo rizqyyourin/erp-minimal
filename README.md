@@ -8,6 +8,10 @@
 <h1 align="center">✨ Minimal ERP</h1>
 
 <p align="center">
+  <a href="https://erp.yourin.my.id"><img src="https://img.shields.io/badge/Live-erp.yourin.my.id-22C55E?style=for-the-badge&logo=vercel&logoColor=white" alt="Live"></a>
+</p>
+
+<p align="center">
   <strong>Modern, minimal ERP system for small businesses</strong><br>
   Sales, inventory, and master data management — without the clutter.
 </p>
