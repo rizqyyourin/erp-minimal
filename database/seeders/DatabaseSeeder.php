@@ -21,7 +21,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Intentionally left blank: no demo data seeded.
-        // Production-first empty database; tenants created via registration flow.
+        $this->call([
+            RoleSeeder::class,
+            SuperAdminSeeder::class,
+        ]);
     }
 }

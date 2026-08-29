@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
         // Force HTTPS in production (check multiple conditions)
         if ($this->app->environment('production') ||
             str_starts_with(config('app.url', ''), 'https://') ||
-            request()->header('X-Forwarded-Proto') === 'https') {
+            (! $this->app->runningInConsole() && $this->app->bound('request') && request()->header('X-Forwarded-Proto') === 'https')) {
             URL::forceScheme('https');
         }
 
